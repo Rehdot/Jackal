@@ -38,30 +38,7 @@ public class JackalTokenizer implements Tokenizer {
             }
 
             if (c == '/' && this.pos + 1 < this.length) {
-                char next = this.source.charAt(this.pos + 1);
-
-                switch (next) { // never tokenize commentation
-                    case '/' -> {
-                        while (this.pos < this.length
-                                && this.source.charAt(this.pos) != '\n') {
-                            this.pos++;
-                        }
-                        continue;
-                    }
-                    case '*' -> {
-                        this.pos += 2;
-                        while (this.pos + 1 < this.length) {
-                            if (this.source.charAt(this.pos) == '*'
-                                    && this.source.charAt(this.pos + 1) == '/') {
-                                this.pos += 2;
-                                break;
-                            }
-                            this.pos++;
-                        }
-                        continue;
-                    }
-                    default -> {}
-                }
+                if (this.skipComment()) continue;
             }
 
             if (c == '"') {
@@ -95,6 +72,34 @@ public class JackalTokenizer implements Tokenizer {
         }
 
         return tokens;
+    }
+
+    private boolean skipComment() {
+        char next = this.source.charAt(this.pos + 1);
+
+        switch (next) {
+            case '/' -> {
+                while (this.pos < this.length
+                        && this.source.charAt(this.pos) != '\n') {
+                    this.pos++;
+                }
+                return true;
+            }
+            case '*' -> {
+                this.pos += 2;
+                while (this.pos + 1 < this.length) {
+                    if (this.source.charAt(this.pos) == '*'
+                            && this.source.charAt(this.pos + 1) == '/') {
+                        this.pos += 2;
+                        break;
+                    }
+                    this.pos++;
+                }
+                return true;
+            }
+            default -> {}
+        }
+        return false;
     }
 
     private SymbolToken readSymbol() {
