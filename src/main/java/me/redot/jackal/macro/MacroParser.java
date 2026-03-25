@@ -80,7 +80,7 @@ public class MacroParser {
         stream.expect("->");
         GroupToken expansionGroup = stream.expectGroup(GroupType.BRACE);
 
-        Pattern pattern = PatternParser.parse(List.of(patternGroup));
+        Pattern pattern = PatternParser.parse(List.of(patternGroup), patternGroup.getGroupType());
         Expansion expansion = ExpansionParser.parse(expansionGroup.getSubtokens());
 
         return new MacroRule(pattern, expansion);

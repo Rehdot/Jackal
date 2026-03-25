@@ -66,6 +66,16 @@ public class TokenStream {
         return token;
     }
 
+    public GroupToken expectGroup() {
+        Token token = this.expectType(TokenType.GROUP);
+
+        if (token instanceof GroupToken group) {
+            return group;
+        }
+
+        throw new IllegalStateException("Expected group token, got " + token);
+    }
+
     public GroupToken expectGroup(GroupType type) {
         Token token = this.advance();
 

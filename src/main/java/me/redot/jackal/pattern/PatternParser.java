@@ -15,9 +15,9 @@ import java.util.List;
 @UtilityClass
 public class PatternParser {
 
-    public static Pattern parse(List<Token> tokens) {
+    public static Pattern parse(List<Token> tokens, GroupType groupType) {
         TokenStream stream = new TokenStream(tokens);
-        Pattern pattern = new Pattern();
+        Pattern pattern = new Pattern(groupType);
 
         while (stream.hasNext()) {
             Token token = stream.peek();
@@ -85,7 +85,7 @@ public class PatternParser {
             return null;
         }
 
-        Pattern inner = parse(group.getSubtokens());
+        Pattern inner = parse(group.getSubtokens(), group.getGroupType());
         return new GroupPattern(group.getGroupType(), inner.getNodes());
     }
 
@@ -106,7 +106,7 @@ public class PatternParser {
         stream.expect(JackalSystem.VARIABLE_SPECIFIER);
 
         GroupToken group = stream.expectGroup(GroupType.PAREN);
-        Pattern inner = parse(group.getSubtokens());
+        Pattern inner = parse(group.getSubtokens(), group.getGroupType());
         String separator = null;
         Token next = stream.peek();
 
