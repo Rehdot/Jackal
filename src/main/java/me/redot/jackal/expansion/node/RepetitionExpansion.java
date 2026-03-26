@@ -38,11 +38,9 @@ public class RepetitionExpansion implements ExpansionNode {
             PatternMatch single = new PatternMatch(match.getMacroRule());
 
             // inherit everything from outer scope
-            for (var entry : match.getBindings().entrySet()) {
-                single.getBindings().put(entry.getKey(), entry.getValue());
-            }
+            single.getBindings().putAll(match.getBindings());
 
-            // bind ALL sequence variables at index i, not just the driven one
+            // bind all sequence variables at index i
             for (var entry : match.getBindings().entrySet()) {
                 String key = entry.getKey();
                 Binding value = entry.getValue();
@@ -51,9 +49,8 @@ public class RepetitionExpansion implements ExpansionNode {
                     if (i < sequenceBinding.getElements().size()) {
                         Binding element = sequenceBinding.getElements().get(i);
 
-                        // could be a TokenBinding or a nested SequenceBinding
-                        if (element instanceof TokenBinding tb) {
-                            single.bindToken(key, tb.getToken());
+                        if (element instanceof TokenBinding tokenBinding) {
+                            single.bindToken(key, tokenBinding.getToken());
                         } else if (element instanceof SequenceBinding nested) {
                             single.bindSequence(key, nested.getElements());
                         }

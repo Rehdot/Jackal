@@ -7,6 +7,7 @@ import me.redot.jackal.pattern.RepetitionType;
 import me.redot.jackal.token.Token;
 import me.redot.jackal.token.TokenModifier;
 import me.redot.jackal.token.TokenStream;
+import me.redot.jackal.token.type.CharToken;
 import me.redot.jackal.token.type.GroupToken;
 import me.redot.jackal.token.type.GroupType;
 import me.redot.jackal.token.type.TokenType;
@@ -42,22 +43,23 @@ public class ExpansionParser {
                 continue;
             }
 
-            if (token.getType() == TokenType.GROUP) {
-                expansion.addNode(parseGroup(stream));
-                continue;
-            }
-
-            if (token.getType() == TokenType.STRING) {
-                String content = token.getContent();
-
-                if (content.contains(JackalSystem.VARIABLE_SPECIFIER)) {
-                    stream.advance();
-                    expansion.addNode(new StringExpansion(content));
-                } else {
-                    expansion.addNode(new LiteralExpansion(stream.advance()));
+            switch (token.getType()) {
+                case GROUP -> {
+                    expansion.addNode(parseGroup(stream));
+                    continue;
                 }
+                case STRING -> {
+                    String content = token.getContent();
 
-                continue;
+                    if (content.contains(JackalSystem.VARIABLE_SPECIFIER)) {
+                        stream.advance();
+                        expansion.addNode(new StringExpansion(content));
+                    } else {
+                        expansion.addNode(new LiteralExpansion(stream.advance()));
+                    }
+                    continue;
+                }
+                case CHAR -> expansion.addNode(new CharExpansion((CharToken) token));
             }
 
             expansion.addNode(new LiteralExpansion(stream.advance()));

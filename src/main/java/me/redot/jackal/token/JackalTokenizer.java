@@ -46,6 +46,11 @@ public class JackalTokenizer implements Tokenizer {
                 continue;
             }
 
+            if (c == '\'') {
+                tokens.add(this.readJavaChar());
+                continue;
+            }
+
             GroupType groupType = GroupType.fromOpenChar(c);
             if (groupType != null) {
                 this.pos++;
@@ -114,6 +119,29 @@ public class JackalTokenizer implements Tokenizer {
         char c = this.source.charAt(this.pos);
         this.pos++;
         return new SymbolToken(String.valueOf(c));
+    }
+
+    private CharToken readJavaChar() {
+        int start = this.pos;
+        boolean escaped = false;
+        this.pos++;
+
+        while (this.pos < this.length) {
+            char c = this.source.charAt(this.pos);
+
+            if (escaped) {
+                escaped = false;
+            } else if (c == '\\') {
+                escaped = true;
+            } else if (c == '\'') {
+                this.pos++;
+                break;
+            }
+
+            this.pos++;
+        }
+
+        return new CharToken(this.source.substring(start, this.pos));
     }
 
     private StringToken readJavaString() {

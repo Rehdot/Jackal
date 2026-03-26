@@ -22,11 +22,9 @@ public class OptionalExpansion implements ExpansionNode {
     public List<Token> expand(PatternMatch match) {
         Binding binding = match.getBinding(this.guardian);
 
-        if (binding instanceof SequenceBinding seq && seq.getElements().isEmpty()) {
-            return List.of(); // guard variable was empty — skip
+        if (binding instanceof SequenceBinding seq && seq.getElements().isEmpty() || binding == null) {
+            return List.of();
         }
-
-        if (binding == null) return List.of();
 
         List<Token> output = new ArrayList<>();
 
