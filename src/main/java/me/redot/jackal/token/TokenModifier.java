@@ -4,8 +4,11 @@ public enum TokenModifier {
 
     CONCAT,
     CAP,
+    UNCAP,
     UPPER,
-    LOWER;
+    LOWER,
+    NEWLINE,
+    DELETE;
 
     public static TokenModifier resolve(String name) {
         return valueOf(name.toUpperCase());

@@ -8,6 +8,7 @@ import me.redot.jackal.token.type.GroupType;
 import me.redot.jackal.token.type.ModifierToken;
 import me.redot.jackal.token.type.TokenType;
 
+import javax.lang.model.SourceVersion;
 import java.util.List;
 import java.util.Set;
 
@@ -98,9 +99,14 @@ public class Reconstructor {
             switch (modifier) {
                 case LOWER -> content = content.toLowerCase();
                 case UPPER -> content = content.toUpperCase();
+                case DELETE -> content = "";
                 case CAP -> {
                     if (content.isEmpty()) continue;
                     content = Character.toUpperCase(content.charAt(0)) + content.substring(1);
+                }
+                case UNCAP -> {
+                    if (content.isEmpty()) continue;
+                    content = Character.toLowerCase(content.charAt(0)) + content.substring(1);
                 }
             }
         }
@@ -129,9 +135,14 @@ public class Reconstructor {
         String a = current.getContent();
         String b = next != null ? next.getContent() : "";
 
-        if (next instanceof ModifierToken mod && mod.hasModifier(TokenModifier.CONCAT)
-                || current instanceof ModifierToken m && m.hasModifier(TokenModifier.CONCAT)) {
-            return "";
+        if (current instanceof ModifierToken) {
+            if (next instanceof ModifierToken mod
+                    && mod.hasModifier(TokenModifier.CONCAT)) return "";
+            return " ";
+        }
+        if (next instanceof ModifierToken mod) {
+            if (mod.hasModifier(TokenModifier.CONCAT)) return "";
+            if (mod.hasModifier(TokenModifier.NEWLINE)) return "\n";
         }
 
         if (current instanceof GroupToken group) {
@@ -160,6 +171,10 @@ public class Reconstructor {
         }
         switch (b) {
             case ".", ",", ";", ")", "]", "++", "--", "" -> { return ""; }
+        }
+
+        if (SourceVersion.isKeyword(a)) {
+            return " ";
         }
 
         if (current.getType() == TokenType.IDENT
