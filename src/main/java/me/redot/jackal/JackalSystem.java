@@ -23,6 +23,8 @@ import java.util.Set;
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public class JackalSystem {
 
+    private static JackalSystem INSTANCE;
+
     public static final String INVOKE_SPECIFIER = "~";
     public static final String VARIABLE_SPECIFIER = "&";
 
@@ -39,6 +41,8 @@ public class JackalSystem {
         this.macroRegistry = MacroRegistry.from(jfTokens);
         this.ruleset = Ruleset.from(jfTokens);
         this.macroMatcher = new MacroMatcher(this.macroRegistry);
+
+        INSTANCE = this;
     }
 
     public String expand(String source) {
@@ -67,6 +71,14 @@ public class JackalSystem {
 
     public static JackalSystem fromJackalFile(String jackalFile) {
         return new JackalSystem(jackalFile);
+    }
+
+    public static JackalSystem getInstance() {
+        if (INSTANCE == null) {
+            throw new IllegalStateException("No JackalSystem exists.");
+        }
+
+        return INSTANCE;
     }
 
 }

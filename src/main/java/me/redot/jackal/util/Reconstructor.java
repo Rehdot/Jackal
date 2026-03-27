@@ -156,13 +156,15 @@ public class Reconstructor {
         }
 
         switch (a) {
-            case ".", "@", "(", "[", "!", "~", "++", "--" -> { return ""; }
+            case ".", "@", "(", "[", "!", "~", "++", "--", "\\" -> { return ""; }
         }
         switch (b) {
             case ".", ",", ";", ")", "]", "++", "--", "" -> { return ""; }
         }
 
-        if (current.getType() == TokenType.IDENT && b.equals("(")) {
+        if (current.getType() == TokenType.IDENT
+                && next instanceof GroupToken group
+                && group.getGroupType() == GroupType.PAREN) {
             return "";
         }
         if (a.equals("<") && (next.getType() == TokenType.IDENT || b.equals("<"))) {

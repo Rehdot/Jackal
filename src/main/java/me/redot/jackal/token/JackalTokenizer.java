@@ -102,9 +102,10 @@ public class JackalTokenizer implements Tokenizer {
                 }
                 return true;
             }
-            default -> {}
+            default -> {
+                return false;
+            }
         }
-        return false;
     }
 
     private SymbolToken readSymbol() {
