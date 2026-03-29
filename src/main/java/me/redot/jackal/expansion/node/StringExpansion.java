@@ -7,7 +7,6 @@ import me.redot.jackal.expansion.ExpansionParser;
 import me.redot.jackal.pattern.PatternMatch;
 import me.redot.jackal.token.Token;
 import me.redot.jackal.token.type.StringToken;
-import me.redot.jackal.util.Expander;
 import me.redot.jackal.util.Reconstructor;
 
 import java.util.ArrayList;
@@ -39,7 +38,6 @@ public class StringExpansion implements ExpansionNode {
 
         JackalSystem system = JackalSystem.getInstance();
         String content = template.substring(1, template.length() - 1);
-
         List<Token> tokens = system.getTokenizer().tokenize(content);
 
         // replace variable and repetition expansions inside of token list
@@ -51,10 +49,9 @@ public class StringExpansion implements ExpansionNode {
         }
 
         // ...and then expand other patterns (macro invocations) inside the string
-        List<Token> expandTokens = Expander.expandTokens(
+        List<Token> expandTokens = system.getExpander().expandTokens(
                 newTokens,
-                new HashSet<>(), // not importing anything from macros expanded inside strings
-                system.getMacroMatcher()
+                new HashSet<>() // not importing anything from macros expanded inside strings
         );
 
         String result = Reconstructor.toSource(expandTokens, Set.of());

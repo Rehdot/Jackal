@@ -10,7 +10,7 @@ import me.redot.jackal.rules.Ruleset;
 import me.redot.jackal.token.JackalTokenizer;
 import me.redot.jackal.token.Token;
 import me.redot.jackal.token.Tokenizer;
-import me.redot.jackal.util.Expander;
+import me.redot.jackal.expansion.Expander;
 import me.redot.jackal.util.Reconstructor;
 
 import java.io.File;
@@ -32,6 +32,7 @@ public class JackalSystem {
     private final Tokenizer tokenizer;
     private final Ruleset ruleset;
     private final MacroMatcher macroMatcher;
+    private final Expander expander;
 
     private JackalSystem(String jackalFile) {
         this.tokenizer = new JackalTokenizer();
@@ -41,6 +42,7 @@ public class JackalSystem {
         this.macroRegistry = MacroRegistry.from(jfTokens);
         this.ruleset = Ruleset.from(jfTokens);
         this.macroMatcher = new MacroMatcher(this.macroRegistry);
+        this.expander = new Expander(this.macroMatcher);
 
         INSTANCE = this;
     }
@@ -54,7 +56,7 @@ public class JackalSystem {
 
         List<Token> tokens = this.tokenizer.tokenize(source);
         Set<String> imports = new HashSet<>();
-        List<Token> expanded = Expander.expandTokens(tokens, imports, this.macroMatcher);
+        List<Token> expanded = this.expander.expandTokens(tokens, imports);
 
         return Reconstructor.toSource(expanded, imports);
     }
