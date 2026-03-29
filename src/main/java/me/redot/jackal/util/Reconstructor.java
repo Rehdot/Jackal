@@ -135,11 +135,7 @@ public class Reconstructor {
         String a = current.getContent();
         String b = next != null ? next.getContent() : "";
 
-        if (current instanceof ModifierToken) {
-            if (next instanceof ModifierToken mod
-                    && mod.hasModifier(TokenModifier.CONCAT)) return "";
-            return " ";
-        }
+        if (current instanceof ModifierToken) return "";
         if (next instanceof ModifierToken mod) {
             if (mod.hasModifier(TokenModifier.CONCAT)) return "";
             if (mod.hasModifier(TokenModifier.NEWLINE)) return "\n";
