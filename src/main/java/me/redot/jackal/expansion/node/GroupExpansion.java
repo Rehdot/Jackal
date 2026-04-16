@@ -27,10 +27,6 @@ public class GroupExpansion implements ExpansionNode {
             inner.addAll(node.expand(match));
         }
 
-        if (inner.size() == 1 && inner.get(0) instanceof GroupToken) {
-            return inner; // avoids double-wrapping
-        }
-
         return List.of(new GroupToken(this.groupType, inner));
     }
 

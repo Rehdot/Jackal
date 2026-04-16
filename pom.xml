@@ -14,6 +14,14 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
+    <distributionManagement>
+        <repository>
+            <id>zenith-artifactory</id>
+            <name>Zenith Studios Artifactory</name>
+            <url>https://artifactory.zenithstudios.dev/artifactory/jackal</url>
+        </repository>
+    </distributionManagement>
+
     <dependencies>
         <dependency>
             <groupId>org.projectlombok</groupId>
